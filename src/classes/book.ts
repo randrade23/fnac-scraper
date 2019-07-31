@@ -8,6 +8,7 @@ export class Book {
     public provider : string;
     public summary : Summary;
     public price : number | undefined;
+    public isbn : string | undefined; // Subject to change
 
     constructor(html: string, provider: string, summary : Summary) {
         this.provider = provider;
@@ -51,6 +52,14 @@ export class Book {
         if (priceClass != "") {
             this.price = parseFloat($(priceClass).text().replace("€", "").replace(",", "."));
         }
+
+        let featureNodes = $(".Feature-item");
+        featureNodes.each((index: number, element: CheerioElement) => {
+            let $$ = cheerio.load(element);
+            if ($$(".Feature-label").text().trim().toUpperCase() == "ISBN") {
+                this.isbn = $$(".Feature-desc").text().trim().replace("-", "").replace("/", "");
+            }
+        });
     }
 
     toString() {
