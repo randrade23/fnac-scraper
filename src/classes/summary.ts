@@ -1,4 +1,6 @@
 import cheerio from 'cheerio';
+import axios, { AxiosResponse } from 'axios';
+import { Book } from './book';
 
 export class Summary {
     public title: string;
@@ -6,10 +8,11 @@ export class Summary {
     public url: URL;
     public thumbnail: URL | undefined;
     public provider : string;
+    public book : Promise<Book>;
 
     constructor(html: string, provider: string) {
         this.provider = provider;
-        
+
         const $ = cheerio.load(html);
 
         this.title = $(".Article-desc > a").text();
@@ -34,6 +37,12 @@ export class Summary {
                 }
             }
         }
+
+        this.book = new Promise((resolve, reject) => {
+            axios.get(this.url.href).then((response : AxiosResponse) => {
+                resolve(new Book(response.data, this.provider, this));
+            });
+        });
     }
 
     toString() {

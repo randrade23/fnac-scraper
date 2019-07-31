@@ -2,6 +2,7 @@ import { Summary } from './classes/summary';
 import axios, { AxiosResponse } from 'axios';
 import StringFormat from 'string-format';
 import cheerio from 'cheerio';
+import { Book } from './classes/book';
 
 export module Fnac {
     const ItemsPerPage = 20;
@@ -34,6 +35,10 @@ export module Fnac {
     }
 }
 
-Fnac.getBooks(1000).then((data : Summary[]) => {
-    console.log(data.toString());
+Fnac.getBooks(20).then((data : Summary[]) => {
+    data.forEach((datum : Summary) => {
+        datum.book.then((book : Book) => {
+            console.log(book.toString());
+        });
+    })
 });
