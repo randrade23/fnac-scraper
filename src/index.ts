@@ -33,13 +33,14 @@ export module Fnac {
                         summaries.push(bookSummary);
                     });
                 });
+                summaries = summaries.slice(0, Math.min(summaries.length, howMany));
                 resolve(summaries);
             });
         });
     }
 }
 
-Fnac.getBooks(120).then((data : Summary[]) => {
+Fnac.getBooks(5).then((data : Summary[]) => {
     data.forEach((datum : Summary) => {
         let summary = SummaryModel.build({
             title: datum.title,
