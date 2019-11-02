@@ -2,9 +2,6 @@ import cheerio from 'cheerio';
 import axios, { AxiosResponse } from 'axios';
 import { Book } from './book';
 
-const Sequelize = require('sequelize');
-const Model = Sequelize.Model;
-
 export class Summary {
     public title: string;
     public description: string;
@@ -52,5 +49,3 @@ export class Summary {
         return JSON.stringify(this);
     }
 }
-
-export class SummaryModel extends Model {}

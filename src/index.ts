@@ -1,12 +1,11 @@
-import { Summary, SummaryModel } from './classes/summary';
+import { Summary } from './classes/summary';
 import axios, { AxiosResponse } from 'axios';
 import StringFormat from 'string-format';
 import cheerio from 'cheerio';
 import { Book } from './classes/book';
-import { Secret } from './secret';
 
-const Sequelize = require('sequelize');
-let secret = new Secret();
+// @ts-ignore
+import { Summary as SummaryModel } from './models';
 
 export module Fnac {
     const ItemsPerPage = 20;
@@ -39,58 +38,17 @@ export module Fnac {
     }
 }
 
-const sequelize = new Sequelize(secret.database, secret.username, secret.password, {
-    host: secret.server,
-    dialect: 'mysql'
-});
-
-sequelize.authenticate().then(() => {
-    SummaryModel.init({
-        title: {
-            type: Sequelize.STRING,
-            allowNull: false,
-            primaryKey: true
-        },
-        description: {
-            type: Sequelize.TEXT,
-            allowNull: true
-        },
-        url: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
-        thumbnail: {
-            type: Sequelize.STRING,
-            allowNull: true
-        },
-        provider: {
-            type: Sequelize.STRING,
-            allowNull: false,
-            primaryKey: true
-        }
-    },
-    {
-        sequelize,
-        modelName: 'summary',
-        timestamps: true   
-    });
-    sequelize.sync().then(() => {
-        sequelize.query('ALTER TABLE summaries DROP PRIMARY KEY');
-        sequelize.query('ALTER TABLE summaries ADD CONSTRAINT identifier PRIMARY KEY (title, provider)');
-    });
-
-    Fnac.getBooks(120).then((data : Summary[]) => {
-        data.forEach((datum : Summary) => {
-            SummaryModel.create({
-                title: datum.title,
-                description: datum.description,
-                url: datum.url.href,
-                thumbnail: datum.thumbnail ? datum.thumbnail.href : "",
-                provider: datum.provider
-            }); 
-            /*datum.book.then((book : Book) => {
-                console.log(book.toString());
-            });*/
+Fnac.getBooks(120).then((data : Summary[]) => {
+    data.forEach((datum : Summary) => {
+        let summary = SummaryModel.build({
+            title: datum.title,
+            description: datum.description,
+            url: datum.url.href,
+            thumbnail: datum.thumbnail ? datum.thumbnail.href : "",
+            provider: datum.provider
+        });
+        summary.save().then(() => {
+            console.log("Inserted: " + datum.title);
         })
-    });
+    })
 });

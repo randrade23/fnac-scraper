@@ -1,0 +1,11 @@
+version: '2.1'
+
+services:
+  fnac-scraper:
+    image: fnac-scraper
+    build: .
+    environment:
+      NODE_ENV: development
+    ports:
+      - 9229:9229
+    command: node --inspect=0.0.0.0:9229 dist/index.js
