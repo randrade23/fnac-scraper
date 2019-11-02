@@ -16,8 +16,8 @@ export class Book {
         
         const $ = cheerio.load(html);
 
-        this.title = $("h1").text();
-        this.description = $(".strate > .whiteContent > p").text();
+        this.title = $("h1").text().trim();
+        this.description = $(".strate > .whiteContent > p").text().trim();
 
         let findImgNode = $("img.f-productVisuals-mainMedia");
         if (findImgNode.length == 0 || findImgNode.get(0).attribs.src.startsWith("data:image")) {
@@ -50,7 +50,7 @@ export class Book {
         }
 
         if (priceClass != "") {
-            this.price = parseFloat($(priceClass).text().replace("€", "").replace(",", "."));
+            this.price = parseFloat($(priceClass).text().trim().replace("€", "").replace(",", "."));
         }
 
         let featureNodes = $(".Feature-item");

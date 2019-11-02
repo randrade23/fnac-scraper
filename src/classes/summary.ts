@@ -15,8 +15,8 @@ export class Summary {
 
         const $ = cheerio.load(html);
 
-        this.title = $(".Article-desc > a").text();
-        this.description = $(".moreInfos-summary > p > span").text();
+        this.title = $(".Article-desc > a").text().trim();
+        this.description = $(".moreInfos-summary > p > span").text().trim();
         this.url = new URL($("p.Article-desc > a").get(0).attribs.href, "https://www.fnac.pt/");
 
         let findImgNode = $("img.Article-itemVisualImg");
