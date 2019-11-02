@@ -1,3 +1,5 @@
+const uuid = require('uuid/v4');
+
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
@@ -5,7 +7,8 @@ module.exports = {
       id: {
         allowNull: false,
         primaryKey: true,
-        type: Sequelize.UUID
+        autoIncrement: true,
+        type: Sequelize.INTEGER
       },
       title: {
         type: Sequelize.STRING
