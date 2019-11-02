@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Summaries', {
+    return queryInterface.createTable('Books', {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -13,13 +13,25 @@ module.exports = {
       description: {
         type: Sequelize.TEXT
       },
-      url: {
-        type: Sequelize.STRING
-      },
       thumbnail: {
         type: Sequelize.STRING
       },
       provider: {
+        type: Sequelize.STRING
+      },
+      summary: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        foreignKey: true,
+        references: {
+          model: 'Summaries',
+          key: 'id'
+        }
+      },
+      price: {
+        type: Sequelize.INTEGER
+      },
+      isbn: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -33,6 +45,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Summaries');
+    return queryInterface.dropTable('Books');
   }
 };
