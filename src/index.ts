@@ -10,6 +10,7 @@ import { Summary as SummaryModel } from './models';
 export module Fnac {
     const ItemsPerPage = 20;
     const SearchEndpoint = "https://www.fnac.pt/SearchResult/ResultList.aspx?SCat=2!1&sft=1&sl&Search=livro&ItemPerPage=" + ItemsPerPage + "&PageIndex={}";
+    const Provider = "Fnac";
 
     export function getBooks(howMany: number = ItemsPerPage) : Promise<Summary[]> {
         let numberOfRequests = Math.round(howMany / ItemsPerPage);
@@ -28,7 +29,7 @@ export module Fnac {
                     const $ = cheerio.load(response.data);
                     const nodes : Cheerio = $(".Article-item");
                     nodes.each((index: number, element: CheerioElement) => {
-                        let bookSummary = new Summary($.html(element), "Fnac");
+                        let bookSummary = new Summary($.html(element), Provider);
                         summaries.push(bookSummary);
                     });
                 });
