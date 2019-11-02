@@ -5,7 +5,7 @@ import cheerio from 'cheerio';
 import { Book } from './classes/book';
 
 // @ts-ignore
-import { Summary as SummaryModel } from './models';
+import { Summary as SummaryModel, Book as BookModel } from './models';
 
 export module Fnac {
     const ItemsPerPage = 20;
@@ -41,16 +41,30 @@ export module Fnac {
 }
 
 Fnac.getBooks(5).then((data : Summary[]) => {
-    data.forEach((datum : Summary) => {
+    data.forEach((summaryData : Summary) => {
         let summary = SummaryModel.build({
-            title: datum.title,
-            description: datum.description,
-            url: datum.url.href,
-            thumbnail: datum.thumbnail ? datum.thumbnail.href : "",
-            provider: datum.provider
+            title: summaryData.title,
+            description: summaryData.description,
+            url: summaryData.url.href,
+            thumbnail: summaryData.thumbnail ? summaryData.thumbnail.href : "",
+            provider: summaryData.provider
         });
         summary.save().then(() => {
-            console.log("Inserted: " + datum.title);
+            console.log("Inserted summary: " + summaryData.title);
+            summaryData.book.then((bookData : Book) => {
+                let book = BookModel.build({
+                    title: bookData.title,
+                    description: bookData.description,
+                    thumbnail: bookData.thumbnail ? bookData.thumbnail.href : "",
+                    provider: bookData.provider,
+                    summary: summary.id,
+                    price: bookData.price ? bookData.price : 0,
+                    isbn: bookData.isbn ? bookData.isbn : "",
+                });
+                book.save().then(() => {
+                    console.log("Inserted book: " + bookData.title);
+                })
+            });
         })
     })
 });
