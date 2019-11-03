@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     provider: DataTypes.STRING
   }, {});
   Summary.associate = function(models) {
-    Summary.belongsTo(models.Book);
+    //Summary.belongsTo(models.Book);
   };
   return Summary;
 };

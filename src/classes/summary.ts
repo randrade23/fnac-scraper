@@ -17,7 +17,7 @@ export class Summary {
 
         this.title = $(".Article-desc > a").text().trim();
         this.description = $(".moreInfos-summary > p > span").text().trim();
-        this.url = new URL($("p.Article-desc > a").get(0).attribs.href, "https://www.fnac.pt/");
+        this.url = new URL($("p.Article-desc > a").get(0).attribs.href.split('#')[0], "https://www.fnac.pt/");
 
         let findImgNode = $("img.Article-itemVisualImg");
         if (findImgNode.length == 0 || findImgNode.get(0).attribs.src.startsWith("data:image")) {

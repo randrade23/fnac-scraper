@@ -17,7 +17,8 @@ module.exports = {
         type: Sequelize.TEXT
       },
       url: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        unique: true
       },
       thumbnail: {
         type: Sequelize.STRING

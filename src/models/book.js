@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     isbn: DataTypes.STRING
   }, {});
   Book.associate = function(models) {
-    Book.hasOne(models.Summary);
+    
   };
   return Book;
 };

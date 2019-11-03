@@ -40,31 +40,41 @@ export module Fnac {
     }
 }
 
-Fnac.getBooks(5).then((data : Summary[]) => {
+Fnac.getBooks(2000).then((data : Summary[]) => {
     data.forEach((summaryData : Summary) => {
-        let summary = SummaryModel.build({
-            title: summaryData.title,
-            description: summaryData.description,
-            url: summaryData.url.href,
-            thumbnail: summaryData.thumbnail ? summaryData.thumbnail.href : "",
-            provider: summaryData.provider
-        });
-        summary.save().then(() => {
-            console.log("Inserted summary: " + summaryData.title);
+        SummaryModel.findOrCreate({
+            where: {
+                url: summaryData.url.href
+            },
+            defaults: {
+                title: summaryData.title,
+                description: summaryData.description,
+                url: summaryData.url.href,
+                thumbnail: summaryData.thumbnail ? summaryData.thumbnail.href : "",
+                provider: summaryData.provider
+            }
+        }).then(([summary, created] : any[]) => {
+            if (created)
+                console.log("Inserted summary: " + summary.title);
             summaryData.book.then((bookData : Book) => {
-                let book = BookModel.build({
-                    title: bookData.title,
-                    description: bookData.description,
-                    thumbnail: bookData.thumbnail ? bookData.thumbnail.href : "",
-                    provider: bookData.provider,
-                    summary: summary.id,
-                    price: bookData.price ? bookData.price : 0,
-                    isbn: bookData.isbn ? bookData.isbn : "",
-                });
-                book.save().then(() => {
-                    console.log("Inserted book: " + bookData.title);
+                BookModel.findOrCreate({
+                    where: {
+                        summary: summary.id
+                    },
+                    defaults: {
+                        title: bookData.title,
+                        description: bookData.description,
+                        thumbnail: bookData.thumbnail ? bookData.thumbnail.href : "",
+                        provider: bookData.provider,
+                        summary: summary.id,
+                        price: bookData.price ? bookData.price : 0,
+                        isbn: bookData.isbn ? bookData.isbn : ""
+                    }
+                }).then(([book, created] : any[]) => {
+                    if (created)
+                        console.log("Inserted book: " + book.title);
                 })
             });
-        })
+        });
     })
 });
